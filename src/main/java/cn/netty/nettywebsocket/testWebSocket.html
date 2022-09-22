@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<div id="msg"></div>
+
+name:<input type="text" id="name">
+room:<input type="text" id="room">
+<input type="submit" value="connect" onclick="connect()">
+<div></div>
+<input type="text" id="text">
+<input type="submit" value="send" onclick="send()">
+</body>
+<script>
+    var msg = document.getElementById("msg");
+    var name = document.getElementById("name");
+    var room = document.getElementById("room");
+    var wsServer = 'ws://127.0.0.1:8081/websocket/' + name + '/' + room;
+    var websocket;
+
+    //监听连接打开
+
+
+    function send() {
+        var text = document.getElementById("text").value
+        websocket.send(text);
+    };
+
+    function connect() {
+        websocket = new WebSocket(wsServer)
+        console.log("connect success")
+        websocket.onopen = function (evt) {
+            msg.innerHTML = "The connection is open";
+        };
+
+        //监听服务器数据推送
+        websocket.onmessage = function (evt) {
+            msg.innerHTML += "<br>" + evt.data;
+        };
+
+        //监听连接关闭
+        websocket.onclose = function (evt) {
+            //alert("connect is break");
+            console.log("error", evt)
+        };
+    };
+</script>
+</html>
